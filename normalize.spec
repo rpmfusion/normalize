@@ -1,22 +1,22 @@
 %define plugindir %(xmms-config --effect-plugin-dir 2>/dev/null)
 
-Summary: 	Tool for adjusting the volume of audio files to a standard level
-Name: 		normalize
-Version: 	0.7.7
-Release: 	3%{?dist}
-URL: 		http://normalize.nongnu.org/
-License: 	GPL
-Group: 		Applications/Multimedia
-Source: 	http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
-BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: 	audiofile-devel >= 1:0.2.1-2, libmad-devel
-BuildRequires: 	gettext
+Summary:  Tool for adjusting the volume of audio files to a standard level
+Name:     normalize
+Version:  0.7.7
+Release:  4%{?dist}
+URL:      http://normalize.nongnu.org/
+License:  GPLv2+
+Group:    Applications/Multimedia
+Source:   http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
+BuildRoot:  %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRequires:  audiofile-devel >= 1:0.2.1-2, libmad-devel
+BuildRequires:  gettext
 # Binaries from the following are required.
-BuildRequires: 	mad, lame, vorbis-tools
+BuildRequires:  lame, vorbis-tools
 # Explicit, because won't be detected automatically.
-Requires: 	mad, lame, vorbis-tools
+Requires:  lame, vorbis-tools
 %ifarch x86_64
-BuildRequires:	libtool 
+BuildRequires:  libtool 
 %endif
 
 %description
@@ -26,17 +26,18 @@ and mp3 collections, where different recording levels on different
 albums can cause the volume to vary greatly from song to song.
 
 %package -n xmms-%{name}
-Summary: 	Relative volume adjustment plugin for XMMS
-Group: 		Applications/Multimedia
-BuildRequires: 	xmms-devel, gtk+-devel
-Requires: 	xmms-libs, %{name} = %{version}-%{release}
+Summary:  Relative volume adjustment plugin for XMMS
+Group:    Applications/Multimedia
+BuildRequires:  xmms-devel, gtk+-devel
+Requires:  xmms-libs, %{name} = %{version}-%{release}
 
 %description -n xmms-%{name}
-Plugin for XMMS to honour relative volume adjustment (RVA2)
-ID3 tag frames.
+Plugin for XMMS to honour relative volume adjustment (RVA2) ID3 tag frames.
+
 
 %prep
 %setup -q
+
 
 %build
 %configure --enable-xmms --with-mad --with-audiofile
@@ -46,14 +47,17 @@ make  \
 %endif
   %{?_smp_mflags}
 
+
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 %find_lang %{name}
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
 
 %files -f %{name}.lang
 %defattr(-,root,root)
@@ -64,6 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/normalize.1.gz
 %{_mandir}/man1/normalize-mp3.1.gz
 
+
 %files -n xmms-%{name}
 %defattr(-,root,root)
 %{plugindir}/librva.so
@@ -71,7 +76,10 @@ rm -rf $RPM_BUILD_ROOT
 # The * here is for x86_64 build where a librva.a and a librva.la are builded
 
 %changelog
-* Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.7.7-3
+* Mon Aug 04 2008 David Timms <iinet.net.au [AT] dtimms> 0.7.7-4
+- mod BR: to libmad, del Requires: mad
+
+* Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.7.7-3
 - rebuild
 
 * Fri Oct 06 2006 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> 0.7.7-2
