@@ -11,7 +11,7 @@ Source:   http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
 BuildRoot:  %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:  audiofile-devel >= 1:0.2.1-2, libmad-devel
 BuildRequires:  gettext
-# Binaries from the following are required.
+# Binaries from the following are required. 
 BuildRequires:  lame, vorbis-tools
 # Explicit, because won't be detected automatically.
 Requires:  lame, vorbis-tools
