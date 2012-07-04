@@ -76,9 +76,6 @@ rm -rf $RPM_BUILD_ROOT
 # The * here is for x86_64 build where a librva.a and a librva.la are builded
 
 %changelog
-* Wed Jul 04 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.7.7-7
-- Rebuilt - missing mass rebuilt
-
 * Wed Jan 25 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.7.7-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
