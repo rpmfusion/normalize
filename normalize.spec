@@ -3,21 +3,20 @@
 Summary:  Tool for adjusting the volume of audio files to a standard level
 Name:     normalize
 Version:  0.7.7
-Release:  8%{?dist}
+Release:  9%{?dist}
 URL:      http://normalize.nongnu.org/
 License:  GPLv2+
 Group:    Applications/Multimedia
 Source:   http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
-BuildRoot:  %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires:  audiofile-devel >= 1:0.2.1-2, libmad-devel
-BuildRequires:  gettext
+Patch0:   normalize-0.7.7-audiofile.patch
+Patch1:   normalize-0.7.7-autoreconf.patch
+BuildRequires:  audiofile-devel >= 1:0.2.1-2 libmad-devel gettext
+# For autoreconf
+BuildRequires:  libtool perl-Carp
 # Binaries from the following are required. 
-BuildRequires:  lame, vorbis-tools
+BuildRequires:  lame vorbis-tools madplay flac
 # Explicit, because won't be detected automatically.
-Requires:  lame, vorbis-tools
-%ifarch x86_64
-BuildRequires:  libtool 
-%endif
+Requires:       lame vorbis-tools madplay flac
 
 %description
 normalize is a tool for adjusting the volume of audio files to a
@@ -25,11 +24,12 @@ standard level. This is useful for things like creating mixed CDs
 and mp3 collections, where different recording levels on different
 albums can cause the volume to vary greatly from song to song.
 
+
 %package -n xmms-%{name}
 Summary:  Relative volume adjustment plugin for XMMS
 Group:    Applications/Multimedia
 BuildRequires:  xmms-devel, gtk+-devel
-Requires:  xmms-libs, %{name} = %{version}-%{release}
+Requires: %{name} = %{version}-%{release}
 
 %description -n xmms-%{name}
 Plugin for XMMS to honour relative volume adjustment (RVA2) ID3 tag frames.
@@ -37,30 +37,29 @@ Plugin for XMMS to honour relative volume adjustment (RVA2) ID3 tag frames.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+touch AUTHORS ChangeLog
+autoreconf -i -f
+for i in THANKS doc/normalize-mp3.1; do
+    iconv -f ISO-8859-1 -t UTF8 "$i" > "$i.UTF8"
+    touch -r "$i" "$i.UTF8"
+    mv "$i.UTF8" "$i"
+done
 
 
 %build
-%configure --enable-xmms --with-mad --with-audiofile
-make  \
-%ifarch x86_64
-  LIBTOOL=/usr/bin/libtool \
-%endif
-  %{?_smp_mflags}
+%configure --enable-xmms --with-mad --with-audiofile --disable-static
+make %{?_smp_mflags}
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
+rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 %find_lang %{name}
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files -f %{name}.lang
-%defattr(-,root,root)
 %doc COPYING README NEWS THANKS TODO
 %{_bindir}/normalize
 %{_bindir}/normalize-mp3
@@ -68,14 +67,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/normalize.1.gz
 %{_mandir}/man1/normalize-mp3.1.gz
 
-
 %files -n xmms-%{name}
-%defattr(-,root,root)
 %{plugindir}/librva.so
-%exclude %{_libdir}/xmms/Effect/librva.*a
-# The * here is for x86_64 build where a librva.a and a librva.la are builded
+
 
 %changelog
+* Mon Mar 25 2013 Hans de Goede <j.w.r.degoede@gmail.com> - 0.7.7-9
+- Fix FTBFS
+- Modernize spec a bit
+- Fix various rpmlint warnings
+
 * Sun Mar 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.7.7-8
 - Mass rebuilt for Fedora 19 Features
 
@@ -117,7 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 - xmms-config errors redirected to dev/null
 
 * Sun May  4 2003 Michael Schwendt <mschwendt[AT]users.sf.net> - 0:0.7.6-0.fdr.7
-- Use $RPM_BUILD_ROOT instead of %{buildroot}.
+- Use $RPM_BUILD_ROOT instead of %%{buildroot}.
 - Fix spec file in accordance with bug #213 comments #14 and #15.
 
 * Sun Apr 27 2003 Michael Schwendt <mschwendt[AT]users.sf.net>
