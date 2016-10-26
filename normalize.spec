@@ -3,7 +3,7 @@
 Summary:  Tool for adjusting the volume of audio files to a standard level
 Name:     normalize
 Version:  0.7.7
-Release:  10%{?dist}
+Release:  11%{?dist}
 URL:      http://normalize.nongnu.org/
 License:  GPLv2+
 Group:    Applications/Multimedia
@@ -12,7 +12,9 @@ Patch0:   normalize-0.7.7-audiofile.patch
 Patch1:   normalize-0.7.7-autoreconf.patch
 BuildRequires:  audiofile-devel >= 1:0.2.1-2 libmad-devel gettext
 # For autoreconf
-BuildRequires:  libtool perl-Carp
+BuildRequires:  libtool perl(Carp)
+# For dependency generation
+BuildRequires:  perl-generators
 # Binaries from the following are required. 
 BuildRequires:  lame vorbis-tools madplay flac
 # Explicit, because won't be detected automatically.
@@ -60,7 +62,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 
 
 %files -f %{name}.lang
-%doc COPYING README NEWS THANKS TODO
+%license COPYING
+%doc README NEWS THANKS TODO
 %{_bindir}/normalize
 %{_bindir}/normalize-mp3
 %{_bindir}/normalize-ogg
@@ -72,6 +75,11 @@ rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 
 
 %changelog
+* Wed Oct 26 2016 Paul Howarth <paul@city-fan.org> - 0.7.7-11
+- BR: perl-generators for proper dependency generation
+  (https://fedoraproject.org/wiki/Changes/Build_Root_Without_Perl)
+- Use %%license
+
 * Sun Aug 31 2014 Sérgio Basto <sergio@serjux.com> - 0.7.7-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
