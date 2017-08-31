@@ -3,7 +3,7 @@
 Summary:  Tool for adjusting the volume of audio files to a standard level
 Name:     normalize
 Version:  0.7.7
-Release:  13%{?dist}
+Release:  14%{?dist}
 URL:      http://normalize.nongnu.org/
 License:  GPLv2+
 Group:    Applications/Multimedia
@@ -75,6 +75,9 @@ rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 
 
 %changelog
+* Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 0.7.7-14
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Sat Jul 15 2017 Paul Howarth <paul@city-fan.org> - 0.7.7-13
 - Perl 5.26 rebuild
 
