@@ -10,15 +10,15 @@ Group:    Applications/Multimedia
 Source:   http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
 Patch0:   normalize-0.7.7-audiofile.patch
 Patch1:   normalize-0.7.7-autoreconf.patch
-BuildRequires:  audiofile-devel >= 1:0.2.1-2 libmad-devel gettext
+BuildRequires:  audiofile-devel >= 1:0.2.1-2 gettext gcc
 # For autoreconf
 BuildRequires:  libtool perl(Carp)
 # For dependency generation
 BuildRequires:  perl-generators
 # Binaries from the following are required. 
-BuildRequires:  lame vorbis-tools madplay flac
+BuildRequires:  lame vorbis-tools flac
 # Explicit, because won't be detected automatically.
-Requires:       lame vorbis-tools madplay flac
+Requires:       lame vorbis-tools flac
 
 %description
 normalize is a tool for adjusting the volume of audio files to a
@@ -31,7 +31,7 @@ albums can cause the volume to vary greatly from song to song.
 Summary:  Relative volume adjustment plugin for XMMS
 Group:    Applications/Multimedia
 BuildRequires:  xmms-devel, gtk+-devel
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description -n xmms-%{name}
 Plugin for XMMS to honour relative volume adjustment (RVA2) ID3 tag frames.
@@ -77,6 +77,8 @@ rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 %changelog
 * Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.7.7-17
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+- Drop madplay support
+- Add BuildRequires: gcc
 
 * Fri Jul 27 2018 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.7.7-16
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
