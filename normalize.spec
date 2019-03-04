@@ -51,7 +51,7 @@ done
 
 
 %build
-%configure --enable-xmms --with-mad --with-audiofile --disable-static
+%configure --enable-xmms --with-audiofile --disable-static
 make %{?_smp_mflags}
 
 
