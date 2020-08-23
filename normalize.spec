@@ -3,7 +3,7 @@
 Summary:  Tool for adjusting the volume of audio files to a standard level
 Name:     normalize
 Version:  0.7.7
-Release:  21%{?dist}
+Release:  22%{?dist}
 URL:      http://normalize.nongnu.org/
 License:  GPLv2+
 Source:   http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
@@ -15,12 +15,13 @@ BuildRequires:  audiofile-devel >= 1:0.2.1-2
 BuildRequires:  gettext
 BuildRequires:  gcc
 BuildRequires:  libtool perl(Carp)
+BuildRequires:  libmad-devel
 # For dependency generation
 BuildRequires:  perl-generators
 # Binaries from the following are required. 
-BuildRequires:  lame vorbis-tools flac mpg123
+BuildRequires:  lame vorbis-tools flac
 # Explicit, because won't be detected automatically.
-Requires:       lame vorbis-tools flac mpg123
+Requires:       lame vorbis-tools flac
 
 %description
 normalize is a tool for adjusting the volume of audio files to a
@@ -40,9 +41,7 @@ Plugin for XMMS to honour relative volume adjustment (RVA2) ID3 tag frames.
 
 
 %prep
-%setup -q
-%patch0 -p1
-%patch1 -p1
+%autosetup -p1
 touch AUTHORS ChangeLog
 autoreconf -fi
 for i in THANKS doc/normalize-mp3.1; do
@@ -78,6 +77,9 @@ rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 
 
 %changelog
+* Sun Aug 23 2020 Leigh Scott <leigh123linux@gmail.com> - 0.7.7-22
+- Revert mpg123 and use libmad
+
 * Sun Aug 23 2020 Leigh Scott <leigh123linux@gmail.com> - 0.7.7-21
 - Add mpg123
 - Clean up spec file
