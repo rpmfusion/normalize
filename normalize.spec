@@ -3,22 +3,24 @@
 Summary:  Tool for adjusting the volume of audio files to a standard level
 Name:     normalize
 Version:  0.7.7
-Release:  20%{?dist}
+Release:  21%{?dist}
 URL:      http://normalize.nongnu.org/
 License:  GPLv2+
-Group:    Applications/Multimedia
 Source:   http://savannah.nongnu.org/download/normalize/normalize-0.7.7.tar.bz2
 Patch0:   normalize-0.7.7-audiofile.patch
 Patch1:   normalize-0.7.7-autoreconf.patch
-BuildRequires:  audiofile-devel >= 1:0.2.1-2 gettext gcc
-# For autoreconf
+
+
+BuildRequires:  audiofile-devel >= 1:0.2.1-2
+BuildRequires:  gettext
+BuildRequires:  gcc
 BuildRequires:  libtool perl(Carp)
 # For dependency generation
 BuildRequires:  perl-generators
 # Binaries from the following are required. 
-BuildRequires:  lame vorbis-tools flac
+BuildRequires:  lame vorbis-tools flac mpg123
 # Explicit, because won't be detected automatically.
-Requires:       lame vorbis-tools flac
+Requires:       lame vorbis-tools flac mpg123
 
 %description
 normalize is a tool for adjusting the volume of audio files to a
@@ -42,7 +44,7 @@ Plugin for XMMS to honour relative volume adjustment (RVA2) ID3 tag frames.
 %patch0 -p1
 %patch1 -p1
 touch AUTHORS ChangeLog
-autoreconf -i -f
+autoreconf -fi
 for i in THANKS doc/normalize-mp3.1; do
     iconv -f ISO-8859-1 -t UTF8 "$i" > "$i.UTF8"
     touch -r "$i" "$i.UTF8"
@@ -52,12 +54,13 @@ done
 
 %build
 %configure --enable-xmms --with-audiofile --disable-static
-make %{?_smp_mflags}
+%make_build
 
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+%make_install
 rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
+
 %find_lang %{name}
 
 
@@ -67,14 +70,18 @@ rm $RPM_BUILD_ROOT%{_libdir}/xmms/Effect/librva.la
 %{_bindir}/normalize
 %{_bindir}/normalize-mp3
 %{_bindir}/normalize-ogg
-%{_mandir}/man1/normalize.1.gz
-%{_mandir}/man1/normalize-mp3.1.gz
+%{_mandir}/man1/normalize.1.*
+%{_mandir}/man1/normalize-mp3.1.*
 
 %files -n xmms-%{name}
 %{plugindir}/librva.so
 
 
 %changelog
+* Sun Aug 23 2020 Leigh Scott <leigh123linux@gmail.com> - 0.7.7-21
+- Add mpg123
+- Clean up spec file
+
 * Tue Aug 18 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 0.7.7-20
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
